@@ -117,4 +117,28 @@ app.get('/view/:_id', (req, res) => {
   })
 })
 
+app.post('/writeReply/:_id', (req, res) => {
+  console.dir(req.body)
+  const date = new Date()
+  // const replyCont = {
+  //   name: req.body.name,
+  //   password: req.body.password,
+  //   content: req.body.content,
+  //   regdate: date
+  // }
+  // Board.findOneAndUpdate(
+  //   {
+  //     _id: req.params.id
+  //   },
+  //   {
+  //     $push: {
+  //       reply: replyCont
+  //     }
+  //   },
+  //   success => {
+  //     res.redirect(req.get('referer'))
+  //   }
+  // )
+})
+
 start()

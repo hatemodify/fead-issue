@@ -108,6 +108,7 @@ app.get('/list', (req, res) => {
     res.send(boards)
   }).sort('-createdAt')
 })
+
 app.get('/view/:_id', (req, res) => {
   const id = req.params
   Board.findOne({ _id: id }, (err, boards) => {

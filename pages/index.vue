@@ -1,32 +1,29 @@
 <template>
-  <section class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        fead-issue
-      </h1>
-      <h2 class="subtitle"></h2>
-      <div class="links">
-        <a href="https://nuxtjs.org/" target="_blank" class="button--green"
-          >Documentation</a
-        >
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-          >GitHub</a
-        >
-      </div>
-    </div>
-  </section>
+  <div id="wrap">
+    <section class="container">
+      <ul class="list_cont">
+        <list :content="item" v-for="item in data" :key="item.id"/>
+      </ul>
+    </section>
+  </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-
+import { List } from '@/components'
+import { async } from 'q'
+import axios from 'axios'
 export default {
+  asyncData() {
+    return axios.get(`/list`).then(res => {
+      console.log(res.data)
+      return { data: res.data }
+    })
+  },
   components: {
-    Logo
+    List
+  },
+  data() {
+    return {}
   }
 }
 </script>

@@ -17,7 +17,6 @@ import { WriteReply, ReplyList } from '@/components'
 export default {
   asyncData({ params, query }) {
     return axios.get(`/view/${query.id}`).then(res => {
-      console.log(res.data)
       return { content: res.data, _idx: query.id }
     })
   },

@@ -18,6 +18,7 @@
 
 <script>
 import axios from 'axios'
+import Vue from 'vue'
 export default {
   data() {
     return {
@@ -28,9 +29,7 @@ export default {
       }
     }
   },
-  mounted() {
-    console.log(this.id)
-  },
+
   props: {
     id: {
       type: String
@@ -38,10 +37,15 @@ export default {
   },
   methods: {
     writeReply() {
-      console.log(this.replyData)
-      axios.post(`/writeReply/${this.id}`, { aa: 'asd' }).then(() => {
-        console.log('success')
-      })
+      axios
+        .post(`/writeReply/${this.id}`, this.replyData)
+        .then(res => {
+          this.$router.go(this.$router.currentRoute)
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 }

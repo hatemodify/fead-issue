@@ -1,6 +1,7 @@
 const express = require('express')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
+const bodyParser = require('body-parser')
 const schedule = require('node-schedule')
 const puppeteer = require('puppeteer')
 const Board = require('./board')
@@ -8,6 +9,7 @@ const mongoose = require('mongoose')
 const router = express.Router()
 
 const app = express()
+app.use(bodyParser.json())
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js')
@@ -106,7 +108,9 @@ app.get('/list', (req, res) => {
   Board.find((err, boards) => {
     if (err) console.log(err)
     res.send(boards)
-  }).sort('-createdAt')
+  })
+    .sort('-createdAt')
+    .limit(20)
 })
 
 app.get('/view/:_id', (req, res) => {
@@ -117,28 +121,28 @@ app.get('/view/:_id', (req, res) => {
   })
 })
 
-app.post('/writeReply/:_id', (req, res) => {
-  console.dir(req.body)
+app.post('/writeReply/:id', (req, res) => {
+  console.log(req.body)
   const date = new Date()
-  // const replyCont = {
-  //   name: req.body.name,
-  //   password: req.body.password,
-  //   content: req.body.content,
-  //   regdate: date
-  // }
-  // Board.findOneAndUpdate(
-  //   {
-  //     _id: req.params.id
-  //   },
-  //   {
-  //     $push: {
-  //       reply: replyCont
-  //     }
-  //   },
-  //   success => {
-  //     res.redirect(req.get('referer'))
-  //   }
-  // )
+  const replyCont = {
+    name: req.body.name,
+    password: req.body.password,
+    content: req.body.content,
+    regdate: date
+  }
+  Board.findOneAndUpdate(
+    {
+      _id: req.params.id
+    },
+    {
+      $push: {
+        reply: replyCont
+      }
+    },
+    success => {
+      res.send('asd')
+    }
+  )
 })
 
 start()

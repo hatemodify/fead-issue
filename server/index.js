@@ -7,6 +7,7 @@ const puppeteer = require('puppeteer')
 const Board = require('./board')
 const mongoose = require('mongoose')
 const router = express.Router()
+const utils = require('./utils')
 
 const app = express()
 app.use(bodyParser.json())
@@ -53,56 +54,56 @@ async function start () {
     badge: true
   })
 
-  // schedule.scheduleJob('*/1 * * * *', () => {
-  //   const opts = {
-  //     url: 'https://media.daum.net/economic',
-  //     link: '.list_mainnews a.link_txt',
-  //     title: '.tit_view',
-  //     content: '.news_view'
-  //   }
+  schedule.scheduleJob('*/1 * * * *', () => {
+    const opts = {
+      url: 'https://media.daum.net/economic',
+      link: '.list_mainnews a.link_txt',
+      title: '.tit_view',
+      content: '.news_view'
+    }
 
-  //   crwal(opts)
-  // })
+    crwal(opts)
+  })
 
-  // const crwal = async opts => {
-  //   const browser = await puppeteer.launch()
-  //   const page = await browser.newPage()
+  const crwal = async opts => {
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
 
-  //   let tempArr = []
-  //   let tempObj = {}
-  //   await page.goto(opts.url)
-  //   await page.waitForSelector(opts.link)
-  //   const stories = await page.$$eval(opts.link, anchors => {
-  //     return anchors.map(anchor => anchor.href).slice(0, 10)
-  //   })
+    let tempArr = []
+    let tempObj = {}
+    await page.goto(opts.url)
+    await page.waitForSelector(opts.link)
+    const stories = await page.$$eval(opts.link, anchors => {
+      return anchors.map(anchor => anchor.href).slice(0, 10)
+    })
 
-  //   for (let storyLink of stories) {
-  //     await page.goto(storyLink)
-  //     const tit = await page.$eval(opts.title, element => {
-  //       return element.innerHTML
-  //     })
+    for (let storyLink of stories) {
+      await page.goto(storyLink)
+      const tit = await page.$eval(opts.title, element => {
+        return element.innerHTML
+      })
 
-  //     const cont = await page.$eval(opts.content, element => {
-  //       return element.innerHTML
-  //     })
-  //     tempObj.tit = tit
-  //     tempObj.cont = cont
-  //     tempArr.push(tempObj)
+      const cont = await page.$eval(opts.content, element => {
+        return element.innerHTML
+      })
+      tempObj.tit = tit
+      tempObj.cont = cont
+      tempArr.push(tempObj)
 
-  //     writeBoard(tit, cont)
-  //   }
+      writeBoard(tit, cont)
+    }
 
-  //   await browser.close()
-  // }
+    await browser.close()
+  }
 
-  // const writeBoard = (tit, cont) => {
-  //   Board.find({ tit: tit }, (err, board, result) => {
-  //     const new_contents = new Board({ tit, cont })
-  //     new_contents.save(err => {
-  //       err ? console.log(err) : console.log('success')
-  //     })
-  //   })
-  // }
+  const writeBoard = (tit, cont) => {
+    Board.find({ tit: tit }, (err, board, result) => {
+      const new_contents = new Board({ tit, cont })
+      new_contents.save(err => {
+        err ? console.log(err) : console.log('success')
+      })
+    })
+  }
 }
 app.get('/list', (req, res) => {
   Board.find((err, boards) => {
